@@ -26,22 +26,25 @@ const server = http.createServer((req, res) => {
         });
 
         //end event will be fired once it's done parsing to request data
-        req.on('end', () => {
+        return req.on('end', () => {
             //to interact with received chunks we need to buffer them
             //this will create a new buffer and add all chunks from body to it
             const parsedBody = Buffer.concat(requestBody).toString();
             const message = parsedBody.split('=')[1];
 
             //writing message to file
-            fs.writeFileSync('message.txt', message);
+            //Sync is for Synchronous, will block code execution until the file is created
+            //Better to use writeFile instead of writeFileSync
+            fs.writeFile('message.txt', message, (err) => {
+                //here we can handle the error
+                
+                //302 code is responsible for redirection
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end();
+            });
         });
-
-        //302 code is responsible for redirection
-        res.statusCode = 302;
-        res.setHeader('Location', '/');
-        return res.end();
     }
-
 
     // quits the server
     // process.exit();
