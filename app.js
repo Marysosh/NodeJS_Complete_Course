@@ -8,7 +8,7 @@ const server = http.createServer((req, res) => {
     if (url === "/") {
         res.write('<html>');
         res.write('<head><title>Enter message</title></head>');
-        res.write('<body><form action="/message" method="POST"><input type="text name="message"><button type="submit">Send</button></form></body>');
+        res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
         res.write('</html>');
 
         //return is added to quit all big createServer callback function execution
@@ -16,7 +16,25 @@ const server = http.createServer((req, res) => {
     }
 
     if (url === '/message' && method === 'POST') {
-        fs.writeFileSync('message.txt', 'DUMMY');
+        const requestBody = [];
+
+        //on method allows us to listen events
+        //data event will be fired whenever a new chunk is ready to be read
+        req.on('data', (chunk) => {
+            console.log(chunk);
+            requestBody.push(chunk);
+        });
+
+        //end event will be fired once it's done parsing to request data
+        req.on('end', () => {
+            //to interact with received chunks we need to buffer them
+            //this will create a new buffer and add all chunks from body to it
+            const parsedBody = Buffer.concat(requestBody).toString();
+            const message = parsedBody.split('=')[1];
+
+            //writing message to file
+            fs.writeFileSync('message.txt', message);
+        });
 
         //302 code is responsible for redirection
         res.statusCode = 302;
