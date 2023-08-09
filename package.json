@@ -1,0 +1,16 @@
+{
+  "name": "nodejs_complete_course",
+  "version": "1.0.0",
+  "description": "Complete Node.js Guide",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@personal:Marysosh/NodeJS_Complete_Course.git"
+  },
+  "author": "Mariia Soshnikova",
+  "license": "ISC"
+}
